@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜덤 명언 생성기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .quote-section {
+            margin-bottom: 40px;
+        }
+
+        .quote-display {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .quote-text {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            font-style: italic;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .quote-author {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-quote-section {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .add-quote-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-add {
+            background: linear-gradient(45deg, #00b894, #00a085);
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            background: linear-gradient(45deg, #00a085, #00b894);
+        }
+
+        .btn-clear {
+            background: linear-gradient(45deg, #e17055, #d63031);
+            margin-left: 10px;
+        }
+
+        .btn-clear:hover {
+            background: linear-gradient(45deg, #d63031, #e17055);
+        }
+
+        .quote-count {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 15px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .quote-text {
+                font-size: 1.2rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">💭 랜덤 명언 생성기</h1>
+        
+        <div class="quote-section">
+            <div class="quote-display">
+                <div>
+                    <div class="quote-text" id="quoteText">버튼을 눌러 명언을 확인해보세요!</div>
+                    <div class="quote-author" id="quoteAuthor"></div>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn" id="generateBtn">명언 보기</button>
+                <button class="btn btn-clear" id="clearBtn">명언 지우기</button>
+            </div>
+        </div>
+
+        <div class="add-quote-section">
+            <h3 class="add-quote-title">새 명언 추가하기</h3>
+            
+            <div class="input-group">
+                <label for="quoteInput">명언 내용:</label>
+                <textarea id="quoteInput" placeholder="여기에 명언을 입력하세요..."></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="authorInput">작가 (선택사항):</label>
+                <input type="text" id="authorInput" placeholder="작가 이름을 입력하세요...">
+            </div>
+            
+            <div>
+                <button class="btn btn-add" id="addBtn">명언 추가</button>
+                <button class="btn btn-clear" id="clearInputBtn">입력 지우기</button>
+            </div>
+            
+            <div class="success-message" id="successMessage">명언이 성공적으로 추가되었습니다!</div>
+            <div class="error-message" id="errorMessage">명언을 입력해주세요.</div>
+            
+            <div class="quote-count" id="quoteCount">현재 저장된 명언: 0개</div>
+        </div>
+    </div>
+
+    <script>
+        // DOM 요소들
+        const quoteTextElement = document.getElementById('quoteText');
+        const quoteAuthorElement = document.getElementById('quoteAuthor');
+        const generateBtn = document.getElementById('generateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const addBtn = document.getElementById('addBtn');
+        const clearInputBtn = document.getElementById('clearInputBtn');
+        const quoteInput = document.getElementById('quoteInput');
+        const authorInput = document.getElementById('authorInput');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const quoteCountElement = document.getElementById('quoteCount');
+
+        // 기본 명언 데이터
+        let quotes = [
+            { text: "성공은 준비된 자에게 찾아오는 기회다.", author: "벤저민 프랭클린" },
+            { text: "꿈을 계속 간직하고 있으면 반드시 실현할 때가 온다.", author: "괴테" },
+            { text: "오늘 할 수 있는 일을 내일로 미루지 마라.", author: "벤저민 프랭클린" },
+            { text: "실패는 성공의 어머니다.", author: "토마스 에디슨" },
+            { text: "인생은 자전거를 타는 것과 같다. 균형을 잡으려면 움직여야 한다.", author: "알베르트 아인슈타인" },
+            { text: "가장 큰 영광은 넘어지지 않는 것이 아니라 넘어질 때마다 일어서는 것이다.", author: "넬슨 만델라" },
+            { text: "성공하는 사람은 실패에서 배우고, 실패하는 사람은 실패에서 포기한다.", author: "데일 카네기" },
+            { text: "당신이 할 수 있다고 믿든 할 수 없다고 믿든, 당신이 옳다.", author: "헨리 포드" },
+            { text: "인생에서 가장 중요한 것은 살아가는 것이 아니라 어떻게 살아가는 것이다.", author: "존 우든" },
+            { text: "성공은 최고점에 도달하는 것이 아니라 최고점을 유지하는 것이다.", author: "마리온 블레이크" }
+        ];
+
+        // 명언 개수 업데이트
+        function updateQuoteCount() {
+            quoteCountElement.textContent = `현재 저장된 명언: ${quotes.length}개`;
+        }
+
+        // 메시지 표시 함수
+        function showMessage(messageElement, duration = 3000) {
+            messageElement.style.display = 'block';
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, duration);
+        }
+
+        // 랜덤 명언 생성
+        function generateQuote() {
+            if (quotes.length === 0) {
+                quoteTextElement.textContent = "저장된 명언이 없습니다. 새로운 명언을 추가해보세요!";
+                quoteAuthorElement.textContent = "";
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const selectedQuote = quotes[randomIndex];
+            
+            quoteTextElement.textContent = selectedQuote.text;
+            quoteAuthorElement.textContent = selectedQuote.author ? `- ${selectedQuote.author}` : "";
+            
+            // 페이드인 애니메이션
+            quoteTextElement.parentElement.parentElement.classList.add('fade-in');
+            setTimeout(() => {
+                quoteTextElement.parentElement.parentElement.classList.remove('fade-in');
+            }, 500);
+        }
+
+        // 명언 지우기
+        function clearQuote() {
+            quoteTextElement.textContent = "버튼을 눌러 명언을 확인해보세요!";
+            quoteAuthorElement.textContent = "";
+        }
+
+        // 새 명언 추가
+        function addQuote() {
+            const quoteText = quoteInput.value.trim();
+            const authorText = authorInput.value.trim();
+
+            if (!quoteText) {
+                showMessage(errorMessage);
+                return;
+            }
+
+            const newQuote = {
+                text: quoteText,
+                author: authorText || "익명"
+            };
+
+            quotes.push(newQuote);
+            updateQuoteCount();
+            
+            // 입력 필드 초기화
+            quoteInput.value = "";
+            authorInput.value = "";
+            
+            showMessage(successMessage);
+        }
+
+        // 입력 필드 지우기
+        function clearInputs() {
+            quoteInput.value = "";
+            authorInput.value = "";
+        }
+
+        // 이벤트 리스너 등록
+        generateBtn.addEventListener('click', generateQuote);
+        clearBtn.addEventListener('click', clearQuote);
+        addBtn.addEventListener('click', addQuote);
+        clearInputBtn.addEventListener('click', clearInputs);
+
+        // Enter 키로 명언 추가
+        quoteInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                addQuote();
+            }
+        });
+
+        authorInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addQuote();
+            }
+        });
+
+        // 초기화
+        function init() {
+            updateQuoteCount();
+        }
+
+        // 페이지 로드 시 초기화
+        init();
+    </script>
+</body>
+</html>
